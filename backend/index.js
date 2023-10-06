@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended:true }))
 //app.use(express.static('public'))
 
 app.use('/', routerPublico)
-//app.use('/', UsuariosController.validaToken, routerPrivado)
+app.use('/', UsuariosController.validaToken, routerPrivado)
 
 app.listen(porta, () => {
     console.log(`Servidor rodando em https://localhost:${porta}`)
