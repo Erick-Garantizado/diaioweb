@@ -1,11 +1,12 @@
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
 class UsuariosController {
     static async cadastrar(req, res) {
         try {
             const salt = await bcrypt.genSalt(12);
-            const senhaHashed = await bcrypt.hash(req.body.senha, salt);            
+            const senhaHashed = await bcrypt.hash(req.body.senha, salt);
         
             const usuario = await User.create({
                 nome: req.body.nome,
@@ -33,16 +34,56 @@ class UsuariosController {
         try {
             const usuario = await User.findOne({
                 where: {
-                    email: req.body.email,
+                    email: req.body.email
                 }
             });
-
-           res.json(usuario)
+            
+            if (usuario) {
+                const senhaCorreta = await bcrypt.compare(
+                    req.body.senha, 
+                    usuario.senha
+                )
+                
+                if (senhaCorreta) {
+                    const token = await jwt.sign(
+                        usuario.id, 
+                        process.env.JWT_KEY
+                    )
+                    res.json({ token });
+                } else {
+                    res.status(401).json({
+                        error: 'Usuário ou senha inválida'
+                    })
+                }
+            } else {
+                res.status(401).json({
+                    error: 'Usuário ou senha inválida'
+                })
+            }
+           
         } catch (e) {
             res.status(500).json({
                 error: e.message
             });
         }
+    }
+    static validaToken(req, res, next) {
+        const token = req.headers['authorization']
+        jwt.verify(
+            token, 
+            process.env.JWT_KEY, 
+            async (error, success) => {
+                if (error) {
+                    res.status(401).json({
+                        error: 'Token inválido'
+                    })
+                } else {
+                    const usuario = await usuarios.findByPk(success);
+                    req.usuarioId = success;
+                    next()
+                }
+            }
+        )
     }
 }
 
