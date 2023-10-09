@@ -78,7 +78,7 @@ class UsuariosController {
                         error: 'Token inválido'
                     })
                 } else {
-                    const usuario = await usuarios.findByPk(success);
+                    const usuario = await User.findByPk(success);
                     req.usuarioId = success;
                     next()
                 }
