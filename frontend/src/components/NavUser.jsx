@@ -1,27 +1,43 @@
 import { LoadingButton } from '@mui/lab'
 import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../services/api'
 
 const NavUser = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const token = localStorage.getItem('user-token')
+  const [nome, setNome] = useState('');
+  const [sexo, setSexo] = useState('');
+  
 
   const handleSair = () => {
     setLoading(true)
     localStorage.removeItem('user-token')
-    navigate('/login')
+    navigate('/')
     setLoading(false)
-}
+  }
   
+  useEffect(() => {
+    api.get('/getusuario')
+    .then( ({ data }) => {
+      setNome(data.nome)
+      setSexo(data.sexo)
+    })
+    .catch( (e)=>{
+      alert(`Erro ${e}`)
+    })
+  }, [])
+
+
   return (
     <Box>
         <AppBar position='static'>
             <Container>
-                <Toolbar>                    
+                <Toolbar>
                     <Typography variant='h6' component="div" sx={{ flexGrow: 1, ml:3 }}>
-                        Diario do usuario
+                        Diario {sexo == 'm'? 'do' : 'da'} { nome }
                     </Typography>
                     <Button color='inherit' 
                     onClick={ ()=>{navigate('/escrever')} }>

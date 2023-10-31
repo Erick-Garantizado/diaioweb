@@ -67,6 +67,24 @@ class UsuariosController {
             });
         }
     }
+
+    static getUsuario(req, res) {
+        const token = req.headers['authorization']
+        jwt.verify(token, process.env.JWT_KEY, async (error, success) => {
+            if (error) {
+                res.status(401).json({
+                    error: 'Token inválido'
+                })
+            } else {
+                const usuario = await User.findByPk(success);
+                res.json({ 
+                    nome: usuario.nome,
+                    sexo: usuario.sexo
+                 });
+            }
+        });
+    }
+
     static validaToken(req, res, next) {
         const token = req.headers['authorization']
         jwt.verify(
