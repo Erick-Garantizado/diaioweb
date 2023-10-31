@@ -1,0 +1,18 @@
+.background {
+    width: 100vw;
+    height: 100vh;
+    background: url('./livro-aberto.jpg') no-repeat center fixed;
+    background-size: cover;
+}
+
+.box-login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+    width: 500px;
+    height: 500px;
+    margin-top: 3rem;
+    border-radius: 5%;
+}
