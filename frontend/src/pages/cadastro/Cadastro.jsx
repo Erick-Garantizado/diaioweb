@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Container, FormControlLabel, Radio, RadioGroup, 
+import { Alert, Box, Container, FormControlLabel, Radio, RadioGroup, 
   TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import './Cadastro.css'
@@ -39,7 +39,7 @@ const Cadastro = () => {
         navigate('/usuarios');
       }).catch( (e)=>{
         console.log(e.response.data)
-        alert("deu erro");
+        Alert("deu erro");
       }).finally(() => {
         setLoading(false);
       });
