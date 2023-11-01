@@ -37,7 +37,7 @@ const NavUser = () => {
             <Container>
                 <Toolbar>
                     <Typography variant='h6' component="div" sx={{ flexGrow: 1, ml:3 }}>
-                        Diario {sexo == 'm'? 'do' : 'da'} { nome }
+                        Diario {sexo === 'm'? 'do' : 'da'} { nome }
                     </Typography>
                     <Button color='inherit' 
                     onClick={ ()=>{navigate('/escrever')} }>
