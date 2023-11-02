@@ -36,6 +36,13 @@ const Login = () => {
       setLoading(false);
     });
   }
+  
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  }
 
   return (
     <Box className='background' >
@@ -43,13 +50,7 @@ const Login = () => {
 
       <Snackbar anchorOrigin={{vertical:'bottom', horizontal:'right'}} 
       autoHideDuration={2000} open={open} variant='solid' color='danger'
-      onClose={(event, reason) => {
-        if (reason === 'clickaway') {
-          return;
-        }
-        setOpen(false);
-      }}
->
+      onClose={handleClose}>
         { msgErro }
       </Snackbar>
 

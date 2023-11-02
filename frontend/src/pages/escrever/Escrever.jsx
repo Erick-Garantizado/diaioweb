@@ -1,45 +1,68 @@
-import React from 'react'
-import NavUser from '../../components/NavUser'
-import { Box, Container, 
-  FormControl, TextField } from '@mui/material'
-import { Textarea } from '@mui/joy'
+import React             from 'react'
+import NavUser           from '../../components/NavUser'
+import { Alert, Box, Container, FormControl, Snackbar, TextField } from '@mui/material'
+import { Textarea }      from '@mui/joy'
 import { LoadingButton } from '@mui/lab'
-import { useNavigate } from 'react-router-dom'
-import api from '../../services/api'
+import { useNavigate }   from 'react-router-dom'
+import api               from '../../services/api'
 import './Escrever.css'
 
 
 const Escrever = () => {
   const dimensaoBotao = { mt: 6, p: 1 };
-  const [loading, setLoading] = React.useState(false);
-  const [titulo, setTitulo] = React.useState('');
+  const [loading, setLoading]   = React.useState(false);
+  const [titulo, setTitulo]     = React.useState('');
   const [mensagem, setMensagem] = React.useState('');
-  const navigate = useNavigate();
+  const [corAlert, setCorAlert] = React.useState('');
+  const [msgAlert, setMsgAlert] = React.useState('');
+  const [open, setOpen]         = React.useState(false);
+  const navigate                = useNavigate();
 
   const handleSalvar = () => {
     setLoading(true)
+
     const dados = {
       titulo: titulo,
       mensagem: mensagem
     }
+
     api.post('/salvar_depoimento', dados)
     .then( ({ data }) => {
-      alert('Mensagem salva!');
-      navigate('/ler');
+      setCorAlert("success");
+      setMsgAlert("Mensagem salva!");
+      setOpen(true);
+
+      setTimeout(() => {
+        navigate('/ler');
+      }, 2000);
     })
     .catch((e) => {
-      alert(`Erro: ${e}`)
+      setCorAlert("error");
+      setMsgAlert(`Erro: ${e}`);
+      setOpen(true)
     })
-    .finally( () => {
-      setLoading(false);
-    })
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
   }
   return (
     <>
       <NavUser/>
       <Container>
 
-        <Box>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} 
+        anchorOrigin={{vertical:'bottom', horizontal:'right'}}>
+          <Alert onClose={handleClose} severity={corAlert} 
+          sx={{ width: '100%' }} variant='filled'>
+            { msgAlert }
+          </Alert>
+        </Snackbar>        
+
+        <Box sx={{mt: 5}}>
           <FormControl className='form-escrever'>
 
             {/** Tirulo */}
