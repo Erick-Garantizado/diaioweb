@@ -17,7 +17,7 @@ class UsuariosController {
                 updatedAt: new Date()
             });
 
-            res.json({
+            res.status(201).json({
                 id: usuario.id,
                 nome: usuario.nome,
                 email: usuario.email,
@@ -63,13 +63,14 @@ class UsuariosController {
            
         } catch (e) {
             res.status(500).json({
-                error: e.message
+                error: e.message 
             });
         }
     }
 
     static getUsuario(req, res) {
         const token = req.headers['authorization']
+        console.log(token)
         jwt.verify(token, process.env.JWT_KEY, async (error, success) => {
             if (error) {
                 res.status(401).json({

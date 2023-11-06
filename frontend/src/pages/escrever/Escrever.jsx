@@ -41,6 +41,8 @@ const Escrever = () => {
       setMsgAlert(`Erro: ${e}`);
       setOpen(true)
     })
+
+    
   }
 
   const handleClose = (event, reason) => {

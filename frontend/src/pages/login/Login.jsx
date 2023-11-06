@@ -1,5 +1,5 @@
 import { Box, Container, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Login.css'
 import { LoadingButton } from '@mui/lab'
 import api from '../../services/api'
@@ -16,23 +16,33 @@ const Login = () => {
   const [msgErro, setMsgErro] = useState('');
   const [open, setOpen] = useState(false);
 
+  useEffect( () => {
+    const token = localStorage.getItem('user-token');
+    if (token) {
+      navigate('/usuarios')
+    }
+  }, [navigate]);
+
   const handleEntrar = () => {
     setLoading(true);
     api.post('/login', {
       email: email,
       senha: senha
     }).then( ({ data }) => {
+      localStorage.setItem('user-token', '')
       localStorage.setItem('user-token', data.token);
       navigate('/usuarios');
     }).catch( (e)=>{
       setOpen(true)
       if (e.message === "Network Error") {
         setMsgErro("Erro de conexao!");
+      } else if (e.request.status === 401) {
+        setMsgErro("Email ou senha incorreto");
       } else {
         console.log(e)
         setMsgErro("Erro inexperado.");
       }
-    }).finally(() => {
+    }).finally( () => {
       setLoading(false);
     });
   }
@@ -65,6 +75,7 @@ const Login = () => {
             fullWidth
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            required
           />
           
           {/** campo senha */}
@@ -75,6 +86,7 @@ const Login = () => {
             fullWidth
             onChange={(e) => setSenha(e.target.value)}
             value={senha}
+            required
           />
 
           <LoadingButton loading={ loading } color="primary" variant="contained" 

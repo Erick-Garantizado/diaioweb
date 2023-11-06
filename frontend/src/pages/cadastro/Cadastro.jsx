@@ -6,6 +6,7 @@ import './Cadastro.css'
 import api from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 import Navegacao from '../../components/Navegacao'
+import { Snackbar } from '@mui/joy'
 
 
 const Cadastro = () => {  
@@ -17,18 +18,18 @@ const Cadastro = () => {
   const [sexo, setSexo] = useState(true);
   const [confirmaSenha, setConfirmaSenha] = useState('');
   const [loading, setLoading] = useState(false);
+  const [msgErro, setMsgErro] = useState('');
+  const [open, setOpen] = useState(false);
   
   
   const verificaSenha = () => {
-    if (senha === confirmaSenha) {return true;} else {return false;}
+    if (senha === confirmaSenha) { return true } else { return false }
   }
 
   const handleCadastrar = () => {
     setLoading(true);
 
-    const prosseguir = verificaSenha();
-
-    if (prosseguir) {
+    if (verificaSenha()) {
       api.post('/cadastro', {
         nome: nome,
         email: email,
@@ -36,7 +37,7 @@ const Cadastro = () => {
         sexo: sexo,
       }).then( ({ data }) => {
         localStorage.setItem('user-token', data.token);
-        navigate('/usuarios');
+        navigate('/login');
       }).catch( (e)=>{
         console.log(e.response.data)
         Alert("deu erro");
@@ -44,14 +45,28 @@ const Cadastro = () => {
         setLoading(false);
       });
     } else {
-      alert("Os campos de senha estao divergentes!")
+      setOpen(true)
+      setMsgErro("Os campos de senha estão divergentes!")
     }
     setLoading(false);
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
   }
 
   return (
     <Box className='background' >
       <Navegacao/>
+      <Snackbar anchorOrigin={{vertical:'bottom', horizontal:'right'}} 
+      autoHideDuration={2500} open={open} variant='solid' color='danger'
+      onClose={handleClose}>
+        { msgErro }
+      </Snackbar>
+
       <Container sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box className='box-login' padding={'15px'}>
           <Typography variant='h4'>Cadastro</Typography>
@@ -63,6 +78,7 @@ const Cadastro = () => {
             fullWidth
             onChange={(e) => setNome(e.target.value)}
             value={nome}
+            required
           />
           
           {/** campo email */}
@@ -72,15 +88,18 @@ const Cadastro = () => {
             fullWidth
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            required
           />
           
           {/** campo senha */}
           <TextField
             label="Senha"
+            type="password"
             sx={{ mb: 3 }}
             fullWidth
             onChange={(e) => setSenha(e.target.value)}
             value={senha}
+            required
           />
 
           {/** campo confirmacao de senha */}
@@ -91,6 +110,7 @@ const Cadastro = () => {
             fullWidth
             onChange={(e) => setConfirmaSenha(e.target.value)}
             value={confirmaSenha}
+            required
           />
 
           {/** campo sexo */}          
@@ -102,8 +122,8 @@ const Cadastro = () => {
             value={sexo}
             onChange={(e) => setSexo(e.target.value)}
           >
-            <FormControlLabel value="F" control={<Radio />} label="Feminino" />
-            <FormControlLabel value="M" control={<Radio />} label="Masculino" />
+            <FormControlLabel value="f" control={<Radio />} label="Feminino" defaultChecked/>
+            <FormControlLabel value="m" control={<Radio />} label="Masculino" />
           </RadioGroup>
           
           <LoadingButton loading={ loading } color="primary" variant="contained" 

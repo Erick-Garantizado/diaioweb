@@ -6,8 +6,10 @@ import caderno2 from './caderno2.jpg'
 import caderno3 from './caderno3.jpg'
 import Navegacao from '../../components/Navegacao'
 
+
+
 const Home = () => {
-  
+
   return (
     <>
       <Navegacao/>
@@ -17,7 +19,7 @@ const Home = () => {
             <h1>Bem-vindo(a) ao diarioweb</h1>
             <p>Aqui voce pode escrever suas mensagens e desabafos</p>
           </Box>
-          
+
           <Box className='box-home' >
             <img src={ caderno } alt="" srcset="" />
             <p>
