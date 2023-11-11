@@ -12,7 +12,7 @@ const Ler = () => {
     api.get('/lista_mensagem')
     .then( ({ data }) => {
       setDepoimentos(data.depoimento);
-      console.log()
+      console.log(depoimentos)
     })
   }, []);
 
@@ -32,6 +32,9 @@ const Ler = () => {
         <Box sx={{ display:'flex', flexWrap:'wrap-reverse', justifyContent:'flex-start' }}>
 
           {
+            depoimentos.length === 0 ? (
+              <h1>Sem mensagens ainda!</h1>
+            ) :
             depoimentos.map( (depoimento) => ( 
               <Card sx={{ width: 225, m:5, p:2 }} key={depoimento.id}>
                 <div>
